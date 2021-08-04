@@ -427,6 +427,18 @@
       </tags>
   </entry>
   <entry>
+    <title>Hive学习文档——HiveQL</title>
+    <url>/2021/08/04/Hive%E5%AD%A6%E4%B9%A0%E6%96%87%E6%A1%A3%E2%80%94%E2%80%94HiveQL/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>BigData</category>
+        <category>Hive</category>
+      </categories>
+      <tags>
+        <tag>Hive</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Linux学习文档-文件权限与目录配置</title>
     <url>/2021/04/22/Linux%E5%AD%A6%E4%B9%A0%E6%96%87%E6%A1%A3-%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90%E4%B8%8E%E7%9B%AE%E5%BD%95%E9%85%8D%E7%BD%AE/</url>
     <content><![CDATA[<h2 id="1-文件属性"><a href="#1-文件属性" class="headerlink" title="1. 文件属性"></a>1. 文件属性</h2><p><img src="https://github.com/CharlieTao/CharlieTao.github.sources/blob/master/BigData/Pictures/Linux/%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7%E7%A4%BA%E6%84%8F%E5%9B%BE.png?raw=true" alt="图1"></p>
