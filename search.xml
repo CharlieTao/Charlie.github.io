@@ -429,7 +429,205 @@
   <entry>
     <title>Hive学习文档——HiveQL</title>
     <url>/2021/08/04/Hive%E5%AD%A6%E4%B9%A0%E6%96%87%E6%A1%A3%E2%80%94%E2%80%94HiveQL/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<h2 id="一、DDL（Data-Definition-Language）"><a href="#一、DDL（Data-Definition-Language）" class="headerlink" title="一、DDL（Data Definition Language）"></a>一、DDL（Data Definition Language）</h2><p><strong>数据定义语言，用于操作对象及对象本身，这种对象包括数据库,表对象，及视图对象</strong></p>
+<h2 id="二、DML（Data-Manipulation-Language-）"><a href="#二、DML（Data-Manipulation-Language-）" class="headerlink" title="二、DML（Data Manipulation Language ）"></a>二、DML（Data Manipulation Language ）</h2><p><strong>数据操控语言， 用于操作数据库对象对象中包含的数据</strong></p>
+<h2 id="三、DQL-Data-Query-Language"><a href="#三、DQL-Data-Query-Language" class="headerlink" title="三、DQL(Data Query Language)"></a>三、DQL(Data Query Language)</h2><p><strong>含义：数据查询语言，用于查询数据</strong></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> [<span class="keyword">ALL</span> | <span class="keyword">DISTINCT</span>] select_expr, select_expr, ...</span><br><span class="line"><span class="keyword">FROM</span> table_reference</span><br><span class="line">[<span class="keyword">WHERE</span> where_condition]</span><br><span class="line">[<span class="keyword">GROUP</span> <span class="keyword">BY</span> col_list [<span class="keyword">HAVING</span> condition]]</span><br><span class="line">[CLUSTER <span class="keyword">BY</span> col_list| [<span class="keyword">DISTRIBUTE</span> <span class="keyword">BY</span> col_list] [<span class="keyword">SORT</span> <span class="keyword">BY</span>| <span class="keyword">ORDER</span> <span class="keyword">BY</span> col_list]]</span><br><span class="line">[<span class="keyword">LIMIT</span> <span class="built_in">number</span>]</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>示例表建表语句：</strong></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> EMPLOYEES (</span><br><span class="line">	<span class="keyword">NAME</span>	<span class="keyword">STRING</span>	<span class="keyword">COMMENT</span> <span class="string">&#x27;姓名&#x27;</span>,</span><br><span class="line">    SALARY	<span class="built_in">FLOAT</span>	<span class="keyword">COMMENT</span> <span class="string">&#x27;薪水&#x27;</span>,</span><br><span class="line">	SUBORDINATES	<span class="built_in">ARRAY</span>&lt;<span class="keyword">STRING</span>&gt;	<span class="keyword">COMMENT</span> <span class="string">&#x27;下属&#x27;</span>,</span><br><span class="line">    DEDUCTIONOS		<span class="keyword">MAP</span>&lt;<span class="keyword">STRING</span>, <span class="built_in">FLOAT</span>&gt;	<span class="keyword">COMMENT</span> <span class="string">&#x27;扣除费用&#x27;</span>,</span><br><span class="line">    ADDRESS		<span class="keyword">STRUCT</span>&lt;STREET:<span class="keyword">STRING</span>, CITY:<span class="keyword">STRING</span>, STATE:<span class="keyword">STRING</span>, ZIP:<span class="built_in">INT</span>&gt;	<span class="keyword">COMMENT</span> <span class="string">&#x27;住址&#x27;</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> (COUNTRY <span class="keyword">STRING</span>, STATE <span class="keyword">STRING</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="1-集合数据类型的取数"><a href="#1-集合数据类型的取数" class="headerlink" title="1. 集合数据类型的取数"></a>1. 集合数据类型的取数</h4><ul>
+<li>Array</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">NAME</span>, SUBORDINATES[<span class="number">0</span>] <span class="keyword">FROM</span> EMPLOYEES;</span><br></pre></td></tr></table></figure>
+
+<!--注-->
+
+<p><em>引用一个不存在的元素会返回NULL。同时，提取出的STRING数据类型的值将不再带有引号</em></p>
+<ul>
+<li>MAP</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">NAME</span>, DEDUCTIONOS[<span class="string">&quot;State Taxes&quot;</span>] <span class="keyword">FROM</span> EMPLOYEES;</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>Struct</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">NAME</span>, ADDRESS.CITY <span class="keyword">FROM</span> EMPLOYEES;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="2-算术运算符"><a href="#2-算术运算符" class="headerlink" title="2. 算术运算符"></a>2. 算术运算符</h4><table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A + B</td>
+<td>数值</td>
+<td>A和B相加</td>
+</tr>
+<tr>
+<td>A - B</td>
+<td>数值</td>
+<td>A减去B</td>
+</tr>
+<tr>
+<td>A * B</td>
+<td>数值</td>
+<td>A和B相乘</td>
+</tr>
+<tr>
+<td>A / B</td>
+<td>数值</td>
+<td>A除以B。如果能整除，那么返回商数</td>
+</tr>
+<tr>
+<td>A % B</td>
+<td>数值</td>
+<td>A除以B的余数</td>
+</tr>
+<tr>
+<td>A &amp; B</td>
+<td>数值</td>
+<td>A和B按位取与</td>
+</tr>
+<tr>
+<td>A | B</td>
+<td>数值</td>
+<td>A和B按位取或</td>
+</tr>
+<tr>
+<td>A ^ B</td>
+<td>数值</td>
+<td>A和B按位取亦或</td>
+</tr>
+<tr>
+<td>~A</td>
+<td>数值</td>
+<td>A和B按位取反</td>
+</tr>
+</tbody></table>
+<!--注-->
+
+<ul>
+<li><em>算术运算符接受任意的数值类型，如果数据类型不同，那么两种类型中数据范围较小的那个数据类型将会转换为其他范围更广的数据类型</em><ul>
+<li>例如，对于INT和BIGINT运算，INT类型将会转换提升为BIGINT。对于INT和FLOAT运算，INT将提升为FLOAT</li>
+</ul>
+</li>
+<li><em>当进行算术运算时，需要注意数据溢出和数据下溢的问题</em><ul>
+<li>解决方法：<ul>
+<li>考虑在表模式中定义使用范围更广的数据类型，缺点是每个数据值会占用更多额外的内存</li>
+<li>使用函数将数据值按照比例从一个范围缩放到另一个范围<ul>
+<li>按照10次方幂进行除法</li>
+<li>取Log值（指数值）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-函数"><a href="#3-函数" class="headerlink" title="3. 函数"></a>3. 函数</h4><h5 id="1-数学函数"><a href="#1-数学函数" class="headerlink" title="1. 数学函数"></a>1. 数学函数</h5><table>
+<thead>
+<tr>
+<th>使用方法</th>
+<th>返回值类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>round (DOUBLE d)</td>
+<td>BIGINT</td>
+<td>返回 DOUBLE 型 d 的 BIGINT 类型的近似值</td>
+</tr>
+<tr>
+<td>round (DOUBLE d, INT n)</td>
+<td>DOUBLE</td>
+<td>返回 DOUBLE 型 d 的保留 n 位小数的 DOUBLE 类型的近似值</td>
+</tr>
+<tr>
+<td>floor (DOUBLE, d)</td>
+<td>BIGINT</td>
+<td>返回 &lt;= d 的最大 BIGINT 型值</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h5 id="2-聚合函数"><a href="#2-聚合函数" class="headerlink" title="2. 聚合函数"></a>2. 聚合函数</h5><h5 id="3-表生成函数"><a href="#3-表生成函数" class="headerlink" title="3. 表生成函数"></a>3. 表生成函数</h5><h5 id="4-其他内置函数"><a href="#4-其他内置函数" class="headerlink" title="4. 其他内置函数"></a>4. 其他内置函数</h5><h4 id="4-LIMIT语句"><a href="#4-LIMIT语句" class="headerlink" title="4. LIMIT语句"></a>4. LIMIT语句</h4><h4 id="5-CASE…WHEN…THEN…"><a href="#5-CASE…WHEN…THEN…" class="headerlink" title="5. CASE…WHEN…THEN…"></a>5. CASE…WHEN…THEN…</h4><h4 id="6-避免MapReduce"><a href="#6-避免MapReduce" class="headerlink" title="6. 避免MapReduce"></a>6. 避免MapReduce</h4><h4 id="7-WHERE"><a href="#7-WHERE" class="headerlink" title="7. WHERE"></a>7. WHERE</h4><h5 id="1-谓词操作符"><a href="#1-谓词操作符" class="headerlink" title="1. 谓词操作符"></a>1. 谓词操作符</h5><h5 id="2-浮点数比较"><a href="#2-浮点数比较" class="headerlink" title="2. 浮点数比较"></a>2. 浮点数比较</h5><h5 id="3-LIKE、RELIKE"><a href="#3-LIKE、RELIKE" class="headerlink" title="3. LIKE、RELIKE"></a>3. LIKE、RELIKE</h5><h4 id="8-GROUP-BY"><a href="#8-GROUP-BY" class="headerlink" title="8. GROUP BY"></a>8. GROUP BY</h4><h5 id="1-HAVING"><a href="#1-HAVING" class="headerlink" title="1. HAVING"></a>1. HAVING</h5><h4 id="9-JOIN"><a href="#9-JOIN" class="headerlink" title="9. JOIN"></a>9. JOIN</h4><h5 id="1-INNER-JOIN"><a href="#1-INNER-JOIN" class="headerlink" title="1. INNER JOIN"></a>1. INNER JOIN</h5><h5 id="2-JOIN优化"><a href="#2-JOIN优化" class="headerlink" title="2. JOIN优化"></a>2. JOIN优化</h5><h5 id="3-LEFT-OUTER-JOIN"><a href="#3-LEFT-OUTER-JOIN" class="headerlink" title="3. LEFT OUTER JOIN"></a>3. LEFT OUTER JOIN</h5><h5 id="4-OUTER-JOIN"><a href="#4-OUTER-JOIN" class="headerlink" title="4. OUTER JOIN"></a>4. OUTER JOIN</h5><h5 id="5-RIGHT-OUTER-JOIN"><a href="#5-RIGHT-OUTER-JOIN" class="headerlink" title="5. RIGHT OUTER JOIN"></a>5. RIGHT OUTER JOIN</h5><h5 id="6-FULL-OUTER-JOIN"><a href="#6-FULL-OUTER-JOIN" class="headerlink" title="6. FULL OUTER JOIN"></a>6. FULL OUTER JOIN</h5><h5 id="7-LEFT-SEMI-JOIN"><a href="#7-LEFT-SEMI-JOIN" class="headerlink" title="7. LEFT SEMI-JOIN"></a>7. LEFT SEMI-JOIN</h5><h5 id="8-笛卡尔积JOIN"><a href="#8-笛卡尔积JOIN" class="headerlink" title="8. 笛卡尔积JOIN"></a>8. 笛卡尔积JOIN</h5><h5 id="9-map-side-JOIN"><a href="#9-map-side-JOIN" class="headerlink" title="9. map-side JOIN"></a>9. map-side JOIN</h5><h4 id="10-ORDER-BY和SORT-BY"><a href="#10-ORDER-BY和SORT-BY" class="headerlink" title="10. ORDER BY和SORT BY"></a>10. ORDER BY和SORT BY</h4><h4 id="11-SORT-BY和DISTRIBUTE-BY"><a href="#11-SORT-BY和DISTRIBUTE-BY" class="headerlink" title="11. SORT BY和DISTRIBUTE BY"></a>11. SORT BY和DISTRIBUTE BY</h4><h4 id="12-CLUSTER-BY"><a href="#12-CLUSTER-BY" class="headerlink" title="12. CLUSTER BY"></a>12. CLUSTER BY</h4><h4 id="13-类型转换"><a href="#13-类型转换" class="headerlink" title="13. 类型转换"></a>13. 类型转换</h4><h4 id="14-抽样调查、数据块抽样"><a href="#14-抽样调查、数据块抽样" class="headerlink" title="14. 抽样调查、数据块抽样"></a>14. 抽样调查、数据块抽样</h4><h4 id="15-分桶表的输入、裁剪"><a href="#15-分桶表的输入、裁剪" class="headerlink" title="15. 分桶表的输入、裁剪"></a>15. 分桶表的输入、裁剪</h4><h4 id="16-UNION-ALL"><a href="#16-UNION-ALL" class="headerlink" title="16. UNION ALL"></a>16. UNION ALL</h4><h4 id=""><a href="#" class="headerlink" title=""></a></h4><h2 id="四、DCL（Data-Control-Language）"><a href="#四、DCL（Data-Control-Language）" class="headerlink" title="四、DCL（Data Control Language）"></a>四、DCL（Data Control Language）</h2><p><strong>数据控制语句，用于操作数据库对象的权限</strong></p>
+<h2 id="五、视图"><a href="#五、视图" class="headerlink" title="五、视图"></a>五、视图</h2><h2 id="六、索引"><a href="#六、索引" class="headerlink" title="六、索引"></a>六、索引</h2>]]></content>
       <categories>
         <category>BigData</category>
         <category>Hive</category>
@@ -770,6 +968,49 @@
       </tags>
   </entry>
   <entry>
+    <title>Spark学习文档-核心原理</title>
+    <url>/2020/12/26/Spark%E5%AD%A6%E4%B9%A0%E6%96%87%E6%A1%A3-%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/</url>
+    <content><![CDATA[<h1 id="消息通信原理"><a href="#消息通信原理" class="headerlink" title="消息通信原理"></a>消息通信原理</h1><hr>
+<h1 id="作业执行原理"><a href="#作业执行原理" class="headerlink" title="作业执行原理"></a>作业执行原理</h1><hr>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="1-Application"><a href="#1-Application" class="headerlink" title="1. Application"></a>1. Application</h3><p>表示本次运次的应用程序</p>
+<h3 id="2-Driver"><a href="#2-Driver" class="headerlink" title="2. Driver"></a>2. Driver</h3><p>表示main()函数，创建SparkContext。由SparkContext负责与CLusterManager通信，进行资源的申请、任务的分配和监控等。程序执行完毕后关闭SparkContext</p>
+<a id="more"></a>
+
+<h3 id="3-Executor"><a href="#3-Executor" class="headerlink" title="3. Executor"></a>3. Executor</h3><p>某个Application运行在Worker节点上的一个进程，该进程负责运行某些Task，负责将数据存在内存或者磁盘上。在Spark On Yarn模式下，其进程名称为CoarseGrainedExecutorBackend，一个CoarseGrainedExecutorBackend能运行Task的数据就取决于分配给它的CPU的个数</p>
+<h3 id="4-Worker"><a href="#4-Worker" class="headerlink" title="4. Worker"></a>4. Worker</h3><p>集群中可以运行Application的节点。在Standalone模式中指的是通过slave文件配置的worker节点，在Spark On Yarn模式中指的就是NodeManager节点</p>
+<h3 id="5-Task"><a href="#5-Task" class="headerlink" title="5. Task"></a>5. Task</h3><p>在Executor进程中执行任务的工作单元，多个Task组成一个Stage</p>
+<h3 id="6-Job"><a href="#6-Job" class="headerlink" title="6. Job"></a>6. Job</h3><p>包含多个Task组成的并行计算，是有行动算子触发的</p>
+<h3 id="7-Stage"><a href="#7-Stage" class="headerlink" title="7. Stage"></a>7. Stage</h3><p>每个Job会被拆分成很多组Task，作为一个TaskSet，其名称为Stage</p>
+<h3 id="8-DAGScheduler"><a href="#8-DAGScheduler" class="headerlink" title="8. DAGScheduler"></a>8. DAGScheduler</h3><p>根据Job构建基于Stage的DAG，并提交Stage给TaskScheduler，其划分Stage的依据是RDD之间的依赖关系</p>
+<h3 id="9-TaskScheduler"><a href="#9-TaskScheduler" class="headerlink" title="9. TaskScheduler"></a>9. TaskScheduler</h3><p>将TaskSet提交给Worker（集群）运行，每个Executor运行什么Task就是在此处分配的</p>
+<blockquote>
+<p>注：有关Application、Driver、Job、Stage、Task之间的关系如下图所示：</p>
+</blockquote>
+<h2 id="运行流程"><a href="#运行流程" class="headerlink" title="运行流程"></a>运行流程</h2><h3 id="图解"><a href="#图解" class="headerlink" title="图解"></a>图解</h3><h3 id="文字说明"><a href="#文字说明" class="headerlink" title="文字说明"></a>文字说明</h3><ol>
+<li><p>构建SparkApplication的运行环境（启动SparkContext），SparkContext向资源管理器（Standalone、Mesos或者Yarn）注册并申请运行Executor资源</p>
+</li>
+<li><p>资源管理器分配Executor资源并启动StandaloneExecutorBackend，Executor运行情况将随着心跳发送到资源管理器上</p>
+</li>
+<li><p>SparkContext构成DAG图，将DAG图分解成Stage，并把TaskSet发送给Task Scheduler；Executor向SparkContext申请Task</p>
+</li>
+<li><p>Task Scheduler将Task发放给Executor运行同时SparkContext将应用程序代码发放给Executor</p>
+</li>
+<li><p>Task在Executor上运行，运行完毕释放所有资源</p>
+</li>
+</ol>
+<h1 id="调度算法"><a href="#调度算法" class="headerlink" title="调度算法"></a>调度算法</h1><hr>
+<h1 id="容错及HA"><a href="#容错及HA" class="headerlink" title="容错及HA"></a>容错及HA</h1><hr>
+<h1 id="监控管理"><a href="#监控管理" class="headerlink" title="监控管理"></a>监控管理</h1><hr>
+]]></content>
+      <categories>
+        <category>BigData</category>
+        <category>Spark</category>
+      </categories>
+      <tags>
+        <tag>Spark</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Spark学习文档-初识Spark</title>
     <url>/2020/12/24/Spark%E5%AD%A6%E4%B9%A0%E6%96%87%E6%A1%A3-%E5%88%9D%E8%AF%86Spark/</url>
     <content><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><hr>
@@ -875,49 +1116,6 @@
 <li><p>GraphX还支持针对图的各种操作（比如进行图分割的subgraph和操作所有顶点的mapVertices），以及一些常用图算法（比如PageRank和三角计数）</p>
 </li>
 </ul>
-]]></content>
-      <categories>
-        <category>BigData</category>
-        <category>Spark</category>
-      </categories>
-      <tags>
-        <tag>Spark</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Spark学习文档-核心原理</title>
-    <url>/2020/12/26/Spark%E5%AD%A6%E4%B9%A0%E6%96%87%E6%A1%A3-%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86/</url>
-    <content><![CDATA[<h1 id="消息通信原理"><a href="#消息通信原理" class="headerlink" title="消息通信原理"></a>消息通信原理</h1><hr>
-<h1 id="作业执行原理"><a href="#作业执行原理" class="headerlink" title="作业执行原理"></a>作业执行原理</h1><hr>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="1-Application"><a href="#1-Application" class="headerlink" title="1. Application"></a>1. Application</h3><p>表示本次运次的应用程序</p>
-<h3 id="2-Driver"><a href="#2-Driver" class="headerlink" title="2. Driver"></a>2. Driver</h3><p>表示main()函数，创建SparkContext。由SparkContext负责与CLusterManager通信，进行资源的申请、任务的分配和监控等。程序执行完毕后关闭SparkContext</p>
-<a id="more"></a>
-
-<h3 id="3-Executor"><a href="#3-Executor" class="headerlink" title="3. Executor"></a>3. Executor</h3><p>某个Application运行在Worker节点上的一个进程，该进程负责运行某些Task，负责将数据存在内存或者磁盘上。在Spark On Yarn模式下，其进程名称为CoarseGrainedExecutorBackend，一个CoarseGrainedExecutorBackend能运行Task的数据就取决于分配给它的CPU的个数</p>
-<h3 id="4-Worker"><a href="#4-Worker" class="headerlink" title="4. Worker"></a>4. Worker</h3><p>集群中可以运行Application的节点。在Standalone模式中指的是通过slave文件配置的worker节点，在Spark On Yarn模式中指的就是NodeManager节点</p>
-<h3 id="5-Task"><a href="#5-Task" class="headerlink" title="5. Task"></a>5. Task</h3><p>在Executor进程中执行任务的工作单元，多个Task组成一个Stage</p>
-<h3 id="6-Job"><a href="#6-Job" class="headerlink" title="6. Job"></a>6. Job</h3><p>包含多个Task组成的并行计算，是有行动算子触发的</p>
-<h3 id="7-Stage"><a href="#7-Stage" class="headerlink" title="7. Stage"></a>7. Stage</h3><p>每个Job会被拆分成很多组Task，作为一个TaskSet，其名称为Stage</p>
-<h3 id="8-DAGScheduler"><a href="#8-DAGScheduler" class="headerlink" title="8. DAGScheduler"></a>8. DAGScheduler</h3><p>根据Job构建基于Stage的DAG，并提交Stage给TaskScheduler，其划分Stage的依据是RDD之间的依赖关系</p>
-<h3 id="9-TaskScheduler"><a href="#9-TaskScheduler" class="headerlink" title="9. TaskScheduler"></a>9. TaskScheduler</h3><p>将TaskSet提交给Worker（集群）运行，每个Executor运行什么Task就是在此处分配的</p>
-<blockquote>
-<p>注：有关Application、Driver、Job、Stage、Task之间的关系如下图所示：</p>
-</blockquote>
-<h2 id="运行流程"><a href="#运行流程" class="headerlink" title="运行流程"></a>运行流程</h2><h3 id="图解"><a href="#图解" class="headerlink" title="图解"></a>图解</h3><h3 id="文字说明"><a href="#文字说明" class="headerlink" title="文字说明"></a>文字说明</h3><ol>
-<li><p>构建SparkApplication的运行环境（启动SparkContext），SparkContext向资源管理器（Standalone、Mesos或者Yarn）注册并申请运行Executor资源</p>
-</li>
-<li><p>资源管理器分配Executor资源并启动StandaloneExecutorBackend，Executor运行情况将随着心跳发送到资源管理器上</p>
-</li>
-<li><p>SparkContext构成DAG图，将DAG图分解成Stage，并把TaskSet发送给Task Scheduler；Executor向SparkContext申请Task</p>
-</li>
-<li><p>Task Scheduler将Task发放给Executor运行同时SparkContext将应用程序代码发放给Executor</p>
-</li>
-<li><p>Task在Executor上运行，运行完毕释放所有资源</p>
-</li>
-</ol>
-<h1 id="调度算法"><a href="#调度算法" class="headerlink" title="调度算法"></a>调度算法</h1><hr>
-<h1 id="容错及HA"><a href="#容错及HA" class="headerlink" title="容错及HA"></a>容错及HA</h1><hr>
-<h1 id="监控管理"><a href="#监控管理" class="headerlink" title="监控管理"></a>监控管理</h1><hr>
 ]]></content>
       <categories>
         <category>BigData</category>
